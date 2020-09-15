@@ -1,0 +1,81 @@
+[SERVICE]
+    Flush        2
+    Daemon       Off
+    Log_File     {{ fluentbit_log_dir }}
+    Log_Level    {{ fluentbit_loglevel }}
+
+    # Parsers_File
+    # ============
+    Parsers_File parsers.conf
+
+    # HTTP Server
+    # ===========
+    HTTP_Server  On
+    HTTP_Listen  {{ fluentbit_http_bind }}
+    HTTP_Port    {{ fluentbit_http_port }}
+
+    # https://docs.fluentbit.io/manual/configuration/buffering
+    storage.path              {{ fluentbit_buffer_path }}
+    storage.sync              {{ fluentbit_buffer_sync }}
+    storage.checksum          {{ fluentbit_buffer_checksum }}
+    storage.backlog.mem_limit {{ fluentbit_buffer_mem_limit }}
+
+#####################################################
+# INPUT
+#####################################################
+
+{% for input in fluentbit_inputs %}
+[INPUT]
+    Name        {{ input.name }}
+    Alias       {{ input.alias }}
+    Tag         {{ input.tag }}
+    Path        {{ input.path }}
+    DB          {{ input.db }}
+{% if input.parser is defined %}
+    Parser      {{ input.parser }}
+{% endif %}
+
+{% endfor %}
+
+#    Buffer_Chunk_Size 128K
+#    Buffer_Max_Size   256K
+#    Refresh_Interval  120
+#    Ignore_Older 1h	#help to not crash on start with too many open file
+#    Mem_Buf_Limit 50M
+
+
+
+#####################################################
+# FILTERS
+#####################################################
+
+{% for filtre in fluentbit_filters %}
+[FILTER]
+    Name {{ filtre.name }}
+    Alias {{ filtre.alias }}
+    Match {{ filtre.match }}
+    {{ filtre.type }} {{ filtre.value }}
+{% endfor %}
+
+#####################################################
+# OUTPUT
+#####################################################
+
+{% for output in fluentbit_outputs %}
+[OUTPUT]
+    Name        {{ output.name }}
+{% if output.alias is defined %}
+    Alias       {{ output.alias }}
+{% endif %}
+    Match       {{ output.match }}
+{% if output.brokers is defined %}
+    Brokers     {{ output.brokers }}
+{% endif %}
+{% if output.topics is defined %}
+    Topics      {{ output.topics }}
+{% endif %}
+{% if output.timestamp_format is defined %}
+    Timestamp_Format {{ output.timestamp_format }}
+{% endif %}
+
+{% endfor %}

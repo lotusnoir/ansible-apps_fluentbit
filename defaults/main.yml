@@ -1,0 +1,44 @@
+---
+# Install
+fluentbit_version:                      "1.5.6"
+fluentbit_binary_name: '/usr/local/bin/fluent-bit'
+fluentbit_nofile_limit: '262144'
+fluentbit_install_dir: '/etc/fluent-bit'
+
+# Config file
+fluentbit_log_dir: '/var/log/fluentbit.log'
+fluentbit_loglevel: 'info'
+fluentbit_http_bind: '0.0.0.0'
+fluentbit_http_port: '9104'
+fluentbit_buffer_path: '/tmp'
+fluentbit_buffer_sync: 'normal'
+fluentbit_buffer_checksum: 'off'
+fluentbit_buffer_mem_limit: '50M'
+
+fluentbit_inputs:
+  - name: tail
+    alias: vms
+    tag: vms
+    path: /data/vms.log
+    db: /data/vms.db
+    parser: syslog
+fluentbit_filters:
+  - name: modify
+    alias: add_from_syslog
+    match: '*'
+    type: Add
+    value: 'from_syslog true'
+fluentbit_outputs:
+  - name: kafka
+    alias: Kafka_vms
+    match: vms 
+    brokers: kafka-01.example.com:9092
+    topics: syslog_vms
+    timestamp_format: iso8601
+fluentbit_parsers:
+  - name: syslog
+    format: regex
+    regex: '^(?<register_time>[^ ]*) (?<source>[^ ]*) (?<level>[^ ]*) *(?<message>.*)$'
+    time_key: time
+    time_format: '%Y-%m-%dT%H:%M:%S %z'
+    time_keep: on

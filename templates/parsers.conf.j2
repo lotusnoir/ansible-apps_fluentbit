@@ -1,0 +1,9 @@
+{% for parser in fluentbit_parsers %}
+[PARSER]
+    Name        {{ parser.name }}
+    Format      {{ parser.format }}
+    Regex       {{ parser.regex }} 
+    Time_Key    {{ parser.time_key }}
+    Time_Format {{ parser.time_format }}
+    Time_Keep   {{ parser.time_keep }}
+{% endfor %}
