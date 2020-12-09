@@ -17,10 +17,10 @@ fluentbit_buffer_mem_limit: '50M'
 
 fluentbit_inputs:
   - name: tail
-    alias: vms
-    tag: vms
-    path: /data/vms.log
-    db: /data/vms.db
+    alias: syslog
+    tag: syslog
+    path: /var/log/syslog
+    db: /var/log/syslog.db
     parser: syslog
 fluentbit_filters:
   - name: modify
@@ -30,8 +30,8 @@ fluentbit_filters:
     value: 'from_syslog true'
 fluentbit_outputs:
   - name: kafka
-    alias: Kafka_vms
-    match: vms
+    alias: Kafka_syslog
+    match: syslog
     brokers: kafka-01.example.com:9092
     topics: syslog_vms
     timestamp_format: iso8601
