@@ -31,7 +31,7 @@ fluentbit_filters:
 fluentbit_outputs:
   - name: kafka
     alias: Kafka_vms
-    match: vms 
+    match: vms
     brokers: kafka-01.example.com:9092
     topics: syslog_vms
     timestamp_format: iso8601
