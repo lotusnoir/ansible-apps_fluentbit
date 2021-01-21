@@ -1,3 +1,9 @@
 ---
 - name: restart fluent-bit
   service: name=fluent-bit state=restarted
+
+- name: stop fluent-bit
+  service: name=fluent-bit state=stopped
+
+- name: start fluent-bit
+  service: name=fluent-bit state=started

@@ -12,6 +12,14 @@
 
 - when: not fluentbit_binary.stat.exists or (fluentbit_binary_version is defined and fluentbit_version not in fluentbit_binary_version.stdout)
   block:
+    - name: "Ensure directories exists"
+      file:
+        path: '{{ item }}'
+        state: directory
+        mode: 0755
+      with_items:
+        - "{{ fluentbit_log_dir }}"
+
     - name: "Make sqlitle human readable db file"
       copy:
         dest: "/root/.sqliterc"
@@ -70,7 +78,9 @@
         src: "/tmp/fluent-bit-{{ fluentbit_version }}/build/bin/fluent-bit"
         dest: "{{ fluentbit_binary_name }}"
         mode: 0755
-      notify: restart fluent-bit
+      notify: 
+        - stop fluent-bit
+        - start fluent-bit
 
     - name: "Modify hard nofile limits for wildcard domain"
       pam_limits:
@@ -116,7 +126,8 @@
     group: root
     mode: '0644'
   notify:
-    - restart fluent-bit
+    - stop fluent-bit
+    - start fluent-bit
 
 - name: "Create parser file {{ fluentbit_install_dir }}/parsers.conf"
   template:
@@ -126,4 +137,5 @@
     group: root
     mode: '0644'
   notify:
-    - restart fluent-bit
+    - stop fluent-bit
+    - start fluent-bit

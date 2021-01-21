@@ -6,14 +6,15 @@ fluentbit_nofile_limit: '262144'
 fluentbit_install_dir: '/etc/fluent-bit'
 
 # Config file
-fluentbit_log_dir: '/var/log/fluentbit.log'
+fluentbit_log_dir: '/var/log/fluentbit'
 fluentbit_loglevel: 'info'
 fluentbit_http_bind: '0.0.0.0'
 fluentbit_http_port: '9104'
 fluentbit_buffer_path: '/tmp'
 fluentbit_buffer_sync: 'normal'
 fluentbit_buffer_checksum: 'off'
-fluentbit_buffer_mem_limit: '50M'
+fluentbit_buffer_mem_limit: '128M'
+
 
 fluentbit_inputs:
   - name: tail
@@ -22,12 +23,17 @@ fluentbit_inputs:
     path: /var/log/syslog
     db: /var/log/syslog.db
     parser: syslog
+    ## optional
+    #buffer_chunk_size: 512K 
+    #buffer_max_size:   1M
+    #refresh_interval:  60
+    #ignore_older: 1h    #help to not crash on start with too many open file
+    #mem_buf_limit: 50M
 fluentbit_filters:
   - name: modify
     alias: add_from_syslog
     match: '*'
-    type: Add
-    value: 'from_syslog true'
+    value: [Add from_syslog true]
 fluentbit_outputs:
   - name: kafka
     alias: Kafka_syslog

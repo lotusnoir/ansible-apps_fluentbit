@@ -1,7 +1,7 @@
 [SERVICE]
     Flush        2
     Daemon       Off
-    Log_File     {{ fluentbit_log_dir }}
+    Log_File     {{ fluentbit_log_dir }}/fluentbit.log
     Log_Level    {{ fluentbit_loglevel }}
 
     # Parsers_File
@@ -34,14 +34,24 @@
 {% if input.parser is defined %}
     Parser      {{ input.parser }}
 {% endif %}
+{% if input.buffer_chunk_size is defined %}
+    Buffer_Chunk_Size {{ input.buffer_chunk_size }}
+{% endif %}
+{% if input.buffer_max_size is defined %}
+    Buffer_Max_Size   {{ input.buffer_max_size }}
+{% endif %}
+{% if input.refresh_interval is defined %}
+    Refresh_Interval  {{ input.refresh_interval }}
+{% endif %}
+{% if input.ignore_older is defined %}
+    Ignore_Older {{ input.ignore_older }}	#help to not crash on start with too many open file
+{% endif %}
+{% if input.mem_buf_limit is defined %}
+    Mem_Buf_Limit {{ input.mem_buf_limit }}
+{% endif %}
 
 {% endfor %}
 
-#    Buffer_Chunk_Size 128K
-#    Buffer_Max_Size   256K
-#    Refresh_Interval  120
-#    Ignore_Older 1h	#help to not crash on start with too many open file
-#    Mem_Buf_Limit 50M
 
 
 
@@ -54,7 +64,9 @@
     Name {{ filtre.name }}
     Alias {{ filtre.alias }}
     Match {{ filtre.match }}
-    {{ filtre.type }} {{ filtre.value }}
+{% for v in filtre.value %}
+    {{ v }}
+{% endfor %}
 {% endfor %}
 
 #####################################################
