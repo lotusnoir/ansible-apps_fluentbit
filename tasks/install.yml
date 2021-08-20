@@ -31,7 +31,7 @@
         group: root
         mode: '0644'
 
-    - name: Install ca-certificates package
+    - name: "Install ca-certificates package"
       package:
         name: ca-certificates
         state: present
@@ -50,7 +50,7 @@
         dest: "/tmp/"
         mode: '1777'
 
-    - name: Install build requierement packages
+    - name: "Install build requirement packages"
       package:
         name: "{{ item }}"
         state: present
@@ -124,6 +124,14 @@
         remote_src: true
       notify:
         - start fluent-bit
+
+    - name: "Clean source temp directory"
+      file:
+        path: "{{ item }}"
+        state: absent
+      with_items:
+        - "/tmp/fluent-bit-{{ fluentbit_version }}"
+        - "/tmp/{{ fluentbit_tgz }}"
 
     - name: "Modify hard nofile limits for root domain"
       pam_limits:
