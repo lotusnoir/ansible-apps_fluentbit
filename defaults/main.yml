@@ -1,6 +1,6 @@
 ---
 # Install
-fluentbit_version:                      "1.5.6"
+fluentbit_version: "1.8.3"
 fluentbit_binary_name: '/usr/local/bin/fluent-bit'
 fluentbit_nofile_limit: '262144'
 fluentbit_install_dir: '/etc/fluent-bit'
@@ -24,7 +24,7 @@ fluentbit_inputs:
     db: /var/log/syslog.db
     parser: syslog
     ## optional
-    #buffer_chunk_size: 512K 
+    #buffer_chunk_size: 512K
     #buffer_max_size:   1M
     #refresh_interval:  60
     #ignore_older: 1h    #help to not crash on start with too many open file
@@ -47,4 +47,4 @@ fluentbit_parsers:
     regex: '^(?<register_time>[^ ]*) (?<source>[^ ]*) (?<level>[^ ]*) *(?<message>.*)$'
     time_key: time
     time_format: '%Y-%m-%dT%H:%M:%S %z'
-    time_keep: on
+    time_keep: "on"
