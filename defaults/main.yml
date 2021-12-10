@@ -1,6 +1,6 @@
 ---
 # Install
-fluentbit_version: "1.8.3"
+fluentbit_version: "1.8.10"
 fluentbit_binary_name: '/usr/local/bin/fluent-bit'
 fluentbit_nofile_limit: '262144'
 fluentbit_install_dir: '/etc/fluent-bit'
@@ -35,12 +35,14 @@ fluentbit_filters:
     match: '*'
     value: [Add from_syslog true]
 fluentbit_outputs:
-  - name: kafka
-    alias: Kafka_syslog
-    match: syslog
-    brokers: kafka-01.example.com:9092
-    topics: syslog_vms
-    timestamp_format: iso8601
+  - name: 'null'
+    match: '*'
+#  - name: kafka
+#    alias: Kafka_syslog
+#    match: syslog
+#    brokers: kafka-01.example.com:9092
+#    topics: syslog_vms
+#    timestamp_format: iso8601
 fluentbit_parsers:
   - name: syslog
     format: regex

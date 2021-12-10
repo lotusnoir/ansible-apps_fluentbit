@@ -1,9 +1,17 @@
 ---
 - name: restart fluent-bit
-  service: name=fluent-bit state=restarted
+  service:
+    name: fluent-bit
+    state: restarted
 
 - name: stop fluent-bit
-  service: name=fluent-bit state=stopped
+  service:
+    name: fluent-bit
+    state: stopped
 
 - name: start fluent-bit
-  service: name=fluent-bit state=started
+  service:
+    name: fluent-bit
+    state: started
+  retries: 3
+  delay: 3

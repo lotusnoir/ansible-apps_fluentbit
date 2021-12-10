@@ -168,7 +168,6 @@
         state: started
         daemon_reload: true
 
-
 - name: "Create config file {{ fluentbit_install_dir }}/fluent-bit.conf"
   template:
     src: fluent-bit.conf.j2
@@ -190,3 +189,12 @@
   notify:
     - stop fluent-bit
     - start fluent-bit
+
+- name: start fluent-bit
+  service:
+    name: fluent-bit
+    state: started
+  register: result
+  retries: 3
+  delay: 3
+  until: result is not failed
