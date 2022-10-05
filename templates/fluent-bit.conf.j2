@@ -33,57 +33,57 @@
 
 {% for input in fluentbit_inputs %}
 [INPUT]
-    Name		{{ input.name }}
+    Name {{ input.name }}
 {% if input.path is defined %}
-    Path		{{ input.path }}
+    Path {{ input.path }}
 {% endif %}
 {% if input.listen is defined %}
-    Listen		{{ input.listen }}
+    Listen {{ input.listen }}
 {% endif %}
 {% if input.port is defined %}
-    Port		{{ input.port }}
+    Port {{ input.port }}
 {% endif %}
 {% if input.mode is defined %}
-    Mode		{{ input.mode }}
+    Mode {{ input.mode }}
 {% endif %}
 {% if input.storage_type is defined %}
-    storage.type	{{ input.storage_type }}
+    storage.type {{ input.storage_type }}
 {% endif %}
 {% if input.parser is defined %}
-    Parser		{{ input.parser }}
+    Parser {{ input.parser }}
 {% endif %}
 {% if input.alias is defined %}
-    Alias		{{ input.alias }}
+    Alias {{ input.alias }}
 {% endif %}
 {% if input.tag is defined %}
-    Tag			{{ input.tag }}
+    Tag {{ input.tag }}
 {% endif %}
 {% if input.path_key is defined %}
-    Path_Key		{{ input.path_key }}
+    Path_Key {{ input.path_key }}
 {% endif %}
 {% if input.db is defined %}
-    DB			{{ input.db }}
+    DB {{ input.db }}
 {% endif %}
 {% if input.db_locking is defined %}
-    DB.locking		{{ input.db_locking }}
+    DB.locking {{ input.db_locking }}
 {% endif %}
 {% if input.scrape_interval is defined %}
-    scrape_interval	{{ input.scrape_interval }}
+    scrape_interval {{ input.scrape_interval }}
 {% endif %}
 {% if input.buffer_chunk_size is defined %}
-    Buffer_Chunk_Size	{{ input.buffer_chunk_size }}
+    Buffer_Chunk_Size {{ input.buffer_chunk_size }}
 {% endif %}
 {% if input.buffer_max_size is defined %}
-    Buffer_Max_Size	{{ input.buffer_max_size }}
+    Buffer_Max_Size {{ input.buffer_max_size }}
 {% endif %}
 {% if input.refresh_interval is defined %}
-    Refresh_Interval	{{ input.refresh_interval }}
+    Refresh_Interval {{ input.refresh_interval }}
 {% endif %}
 {% if input.ignore_older is defined %}
-    Ignore_Older	{{ input.ignore_older }}	#help to not crash on start with too many open file
+    Ignore_Older {{ input.ignore_older }}	#help to not crash on start with too many open file
 {% endif %}
 {% if input.mem_buf_limit is defined %}
-    Mem_Buf_Limit	{{ input.mem_buf_limit }}
+    Mem_Buf_Limit {{ input.mem_buf_limit }}
 {% endif %}
 {% endfor %}
 
@@ -93,19 +93,19 @@
 
 {% for filter in fluentbit_filters %}
 [FILTER]
-    Name 		{{ filter.name }}
+    Name {{ filter.name }}
 {% if filter.alias is defined %}
-    Alias 		{{ filter.alias }}
+    Alias {{ filter.alias }}
 {% endif %}
 {% if filter.type is defined %}
-    type 		{{ filter.type }}
+    type {{ filter.type }}
 {% endif %}
-    Match 		{{ filter.match }}
+    Match {{ filter.match }}
 {% if filter.record is defined %}
-    Record 		{{ filter.record }}
+    Record {{ filter.record }}
 {% endif %}
 {% if filter.regex is defined %}
-    regex 		{{ filter.regex }}
+    regex {{ filter.regex }}
 {% endif %}
 {% if filter.value is defined %}
 {% for v in filter.value %}
@@ -120,35 +120,35 @@
 
 {% for output in fluentbit_outputs %}
 [OUTPUT]
-    Name        	{{ output.name }}
+    Name {{ output.name }}
 {% if output.alias is defined %}
-    Alias       	{{ output.alias }}
+    Alias {{ output.alias }}
 {% endif %}
 {% if output.match is defined %}
-    Match       	{{ output.match }}
+    Match {{ output.match }}
 {% endif %}
 {% if output.match_regex is defined %}
-    match_regex     	{{ output.match_regex }}
+    match_regex {{ output.match_regex }}
 {% endif %}
 {% if output.brokers is defined %}
-    Brokers     	{{ output.brokers }}
+    Brokers {{ output.brokers }}
 {% endif %}
 {% if output.topics is defined %}
-    Topics      	{{ output.topics }}
+    Topics {{ output.topics }}
 {% endif %}
 {% if output.timestamp_format is defined %}
-    Timestamp_Format 	{{ output.timestamp_format }}
+    Timestamp_Format {{ output.timestamp_format }}
 {% endif %}
 {% if output.host is defined %}
-    Host     		{{ output.host }}
+    Host {{ output.host }}
 {% endif %}
 {% if output.port is defined %}
-    Port     		{{ output.port }}
+    Port {{ output.port }}
 {% endif %}
 {% if output.storage_total_limit_size is defined %}
-    storage.total_limit_size     {{ output.storage_total_limit_size }}
+    storage.total_limit_size {{ output.storage_total_limit_size }}
 {% endif %}
 {% if output.retry_limit is defined %}
-    Retry_Limit     	{{ output.retry_limit }}
+    Retry_Limit {{ output.retry_limit }}
 {% endif %}
 {% endfor %}
