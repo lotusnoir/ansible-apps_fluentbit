@@ -1,0 +1,20 @@
+---
+- name: "Debian | Install gpg package"
+  ansible.builtin.package:
+    name: gpg
+    state: present
+
+- name: "Debian | Add fluentbit apt signing key"
+  ansible.builtin.apt_key:
+    url: https://packages.fluentbit.io/fluentbit.key
+    state: present
+
+- name: "Debian | Add fluentbit repo to apt list"
+  ansible.builtin.apt_repository:
+    repo: deb https://packages.fluentbit.io/{{ ansible_distribution | lower }}/{{ ansible_distribution_release }} {{ ansible_distribution_release }} main
+    state: present
+    filename: fluent-bit
+
+- name: Update apt cache.
+  apt: update_cache=yes cache_valid_time=600
+  changed_when: false
