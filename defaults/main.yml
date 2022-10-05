@@ -20,6 +20,11 @@ fluentbit_include_d: false
 
 fluentbit_inputs:
   - name: tail
+    alias: vms
+    tag: vms
+    path: /tmp/vms.log
+    db: /tmp/vms.db
+    parser: syslog
 ## optional
 #    path: /var/log/syslog
 #    listen: 0.0.0.0
@@ -41,6 +46,8 @@ fluentbit_inputs:
 fluentbit_filters:
   - name: modify
     match: '*'
+    type: Add
+    value: 'from_syslog true'
     ## optional
     #alias: add_from_syslog
     #regex: 'ident ^toto$'
