@@ -1,10 +1,12 @@
 ---
-# Install
-fluentbit_version: "1.8.10"
-fluentbit_binary_name: '/usr/local/bin/fluent-bit'
+#install mode
+fluentbit_install_mode: "repo" #or build
 fluentbit_nofile_limit: '262144'
 fluentbit_install_dir: '/etc/fluent-bit'
-fluentbit_install_mode: "repo" #or build
+# when build
+fluentbit_version: "1.8.10"
+fluentbit_binary_name: '/usr/local/bin/fluent-bit'
+
 
 # Config file
 fluentbit_log_dir: '/var/log/fluentbit'

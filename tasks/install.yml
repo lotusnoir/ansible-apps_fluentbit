@@ -45,9 +45,9 @@
           when:
             - ansible_os_family == 'Debian'
 
-        - include_tasks: setup-Redhat.yml
-          when:
-            - ansible_os_family == 'RedHat' or ansible_distribution == 'OracleLinux'
+        #- include_tasks: setup-Redhat.yml
+        #  when:
+        #    - ansible_os_family == 'RedHat' or ansible_distribution == 'OracleLinux'
 
         - name: "Install fluentbit package"
           ansible.builtin.package:
