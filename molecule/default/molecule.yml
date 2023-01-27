@@ -41,13 +41,6 @@ platforms:
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
     groups:
       - python3
-  - name: apps-fluentbit-debian10
-    pre_build_image: true
-    image: lotusnoir/ansible_molecule_test_images:debian10
-    docker_host: "${DOCKER_HOST:-unix://var/run/docker.sock}"
-    privileged: true
-    volumes:
-      - /sys/fs/cgroup:/sys/fs/cgroup:ro
   - name: apps-fluentbit-debian11
     pre_build_image: true
     image: lotusnoir/ansible_molecule_test_images:debian11
@@ -55,22 +48,15 @@ platforms:
     privileged: true
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
-  - name: apps-fluentbit-centos7
-    pre_build_image: true
-    image: lotusnoir/ansible_molecule_test_images:centos7
-    docker_host: "${DOCKER_HOST:-unix://var/run/docker.sock}"
-    privileged: true
-    volumes:
-      - /sys/fs/cgroup:/sys/fs/cgroup:ro
-  - name: apps-fluentbit-rocky8
-    pre_build_image: true
-    image: lotusnoir/ansible_molecule_test_images:rocky8
-    docker_host: "${DOCKER_HOST:-unix://var/run/docker.sock}"
-    privileged: true
-    volumes:
-      - /sys/fs/cgroup:/sys/fs/cgroup:ro
     groups:
       - python3
+  - name: apps-fluentbit-debian10
+    pre_build_image: true
+    image: lotusnoir/ansible_molecule_test_images:debian10
+    docker_host: "${DOCKER_HOST:-unix://var/run/docker.sock}"
+    privileged: true
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
   - name: apps-fluentbit-oraclelinux7
     pre_build_image: true
     image: lotusnoir/ansible_molecule_test_images:oraclelinux7
@@ -85,8 +71,7 @@ platforms:
     privileged: true
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
-    groups:
-      - python3
+
 provisioner:
   name: ansible
   playbooks:
