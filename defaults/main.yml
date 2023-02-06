@@ -3,7 +3,6 @@
 fluentbit_install_mode: "repo" #or build
 fluentbit_nofile_limit: '262144'
 fluentbit_install_dir: '/etc/fluent-bit'
-#fluentbit_repository: "http://customrepo/xxx"
 # when build
 fluentbit_version: "1.8.10"
 fluentbit_binary_name: '/usr/local/bin/fluent-bit'
