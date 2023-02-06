@@ -1,20 +1,29 @@
 ---
-- name: "Debian | Install gpg package"
+- name: "Debian | Install gpg package."
   ansible.builtin.package:
     name: gpg
     state: present
 
-- name: "Debian | Add fluentbit apt signing key"
+- name: "Debian | Add fluentbit apt signing key."
   ansible.builtin.apt_key:
     url: https://packages.fluentbit.io/fluentbit.key
     state: present
+  when: fluentbit_repository is not defined
 
-- name: "Debian | Add fluentbit repo to apt list"
+- name: "Debian | Add fluentbit repo to apt list."
   ansible.builtin.apt_repository:
     repo: deb https://packages.fluentbit.io/{{ ansible_distribution | lower }}/{{ ansible_distribution_release }} {{ ansible_distribution_release }} main
     state: present
     filename: fluent-bit
+  when: fluentbit_repository is not defined
 
-- name: Update apt cache.
+- name: "Debian | Add fluentbit repo to apt list"
+  ansible.builtin.apt_repository:
+    repo: "{{ fluentbit_repository }}"
+    state: present
+    filename: wazuh
+  when: fluentbit_repository is defined and fluentbit_repository|length > 0
+
+- name: "Debian | Update apt cache."
   ansible.builtin.apt: update_cache=yes cache_valid_time=600
   changed_when: false
