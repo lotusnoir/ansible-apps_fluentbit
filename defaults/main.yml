@@ -4,7 +4,7 @@ fluentbit_install_mode: "repo" #or build
 fluentbit_nofile_limit: '262144'
 fluentbit_install_dir: '/etc/fluent-bit'
 # when build
-fluentbit_version: "1.8.10"
+fluentbit_version: "2.1.2"
 fluentbit_binary_name: '/usr/local/bin/fluent-bit'
 
 
@@ -20,13 +20,13 @@ fluentbit_buffer_checksum: 'off'
 fluentbit_buffer_mem_limit: '128M'
 fluentbit_include_d: false
 
-fluentbit_inputs:
-  - name: tail
-    alias: vms
-    tag: vms
-    path: /tmp/vms.log
-    db: /tmp/vms.db
-    parser: syslog
+fluentbit_inputs: ""
+#  - name: tail
+#    alias: vms
+#    tag: vms
+#    path: /tmp/vms.log
+#    db: /tmp/vms.db
+#    parser: syslog
 ## optional
 #    path: /var/log/syslog
 #    listen: 0.0.0.0
@@ -45,19 +45,19 @@ fluentbit_inputs:
 #    refresh_interval:  60
 #    ignore_older: 1h    #help to not crash on start with too many open file
 #    mem_buf_limit: 50M
-fluentbit_filters:
-  - name: modify
-    match: '*'
-    type: Add
-    value: 'from_syslog true'
-    ## optional
-    #alias: add_from_syslog
-    #regex: 'ident ^toto$'
-    #Record hostname ${HOSTNAME}
-    #value: [Add from_syslog true]
-fluentbit_outputs:
-  - name: 'null'
-    match: '*'
+fluentbit_filters: ""
+#  - name: modify
+#    match: '*'
+#    rules:
+#      - "Add from_syslog true"
+#    ## optional
+#    #alias: add_from_syslog
+#    #regex: 'ident ^toto$'
+#    #Record hostname ${HOSTNAME}
+#    #value: [Add from_syslog true]
+fluentbit_outputs: ""
+#  - name: 'null'
+#    match: '*'
 #  - name: kafka
 #    alias: Kafka_syslog
 #    match: syslog
@@ -72,10 +72,10 @@ fluentbit_outputs:
 #    #match_regex:
 #    #storage_total_limit_size: 200M
 #    #retry_limit: 10
-fluentbit_parsers:
-  - name: syslog
-    format: regex
-    regex: '^(?<register_time>[^ ]*) (?<source>[^ ]*) (?<level>[^ ]*) *(?<message>.*)$'
-    time_key: time
-    time_format: '%Y-%m-%dT%H:%M:%S %z'
-    time_keep: "on"
+fluentbit_parsers: ""
+#  - name: syslog
+#    format: regex
+#    regex: '^(?<register_time>[^ ]*) (?<source>[^ ]*) (?<level>[^ ]*) *(?<message>.*)$'
+#    time_key: time
+#    time_format: '%Y-%m-%dT%H:%M:%S %z'
+#    time_keep: "on"

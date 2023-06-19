@@ -156,13 +156,12 @@
             - "/tmp/{{ fluentbit_tgz }}"
 
         - name: "Create a systemd init script"
-          ansible.builtin.copy:
-            src: fluent-bit.service
-            dest: /lib/systemd/system/
+          ansible.builtin.template:
+            src: fluent-bit.service.j2
+            dest: /lib/systemd/system/fluent-bit.service
             owner: root
             group: root
             mode: '0644'
-
 
     - name: "Modify hard nofile limits for root domain"
       ansible.builtin.pam_limits:
@@ -182,7 +181,6 @@
       ansible.builtin.service:
         name: "{{ fluentbit_pkg_name }}"
         enabled: true
-        state: started
         daemon_reload: true
 
 - name: "Create config file {{ fluentbit_install_dir }}/fluent-bit.conf"

@@ -39,10 +39,10 @@ See [variables](/defaults/main.yml) for more details.
               - name: modify
                 alias: add_from_syslog
                 match: '*'
-                type: Add
-                value: 'from_syslog true'
+                rules:
+                  - "Add from_syslog true"
             fluentbit_outputs:
-              - name: null
+              - name: 'null'
                 match: '*'
             fluentbit_parsers:
               - name: syslog
@@ -50,7 +50,7 @@ See [variables](/defaults/main.yml) for more details.
                 regex: '^(?<register_time>[^ ]*) (?<source>[^ ]*) (?<level>[^ ]*) *(?<message>.*)$'
                 time_key: time
                 time_format: '%Y-%m-%dT%H:%M:%S %z'
-                time_keep: on
+                time_keep: 'on'
 
 
 

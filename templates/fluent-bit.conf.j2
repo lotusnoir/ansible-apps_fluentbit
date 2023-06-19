@@ -97,9 +97,6 @@
 {% if filter.alias is defined %}
     Alias {{ filter.alias }}
 {% endif %}
-{% if filter.type is defined %}
-    type {{ filter.type }}
-{% endif %}
     Match {{ filter.match }}
 {% if filter.record is defined %}
     Record {{ filter.record }}
@@ -107,8 +104,8 @@
 {% if filter.regex is defined %}
     regex {{ filter.regex }}
 {% endif %}
-{% if filter.value is defined %}
-{% for v in filter.value %}
+{% if filter.rules is defined %}
+{% for v in filter.rules %}
     {{ v }}
 {% endfor %}
 {% endif %}
