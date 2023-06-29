@@ -1,2 +1,2 @@
 ---
-fluentbit_pkg_name: "td-agent-bit"
+fluentbit_pkg_name: "fluent-bit"
