@@ -21,6 +21,7 @@
       with_items:
         - "{{ fluentbit_log_dir }}"
         - "{{ fluentbit_install_dir }}"
+        - "{{ fluentbit_install_dir }}/conf.d"
 
     - name: "Make sqlitle human readable db file"
       ansible.builtin.copy:
@@ -193,6 +194,12 @@
   notify:
     - stop fluent-bit
     - start fluent-bit
+
+- name: Create empty conf file
+  ansible.builtin.file:
+    path: "{{ fluentbit_install_dir }}/conf.d/empty.conf"
+    state: touch
+  when: fluentbit_include_d | bool
 
 - name: "Create parser file {{ fluentbit_install_dir }}/parsers.conf"
   ansible.builtin.template:

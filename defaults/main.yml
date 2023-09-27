@@ -4,9 +4,8 @@ fluentbit_install_mode: "repo" #or build
 fluentbit_nofile_limit: '262144'
 fluentbit_install_dir: '/etc/fluent-bit'
 # when build
-fluentbit_version: "2.1.2"
+fluentbit_version: "2.1.9"
 fluentbit_binary_name: '/usr/local/bin/fluent-bit'
-
 
 # Config file
 fluentbit_log_dir: '/var/log/fluentbit'
