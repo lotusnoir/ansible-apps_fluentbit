@@ -17,7 +17,6 @@ fluentbit_buffer_path: '/tmp'
 fluentbit_buffer_sync: 'normal'
 fluentbit_buffer_checksum: 'off'
 fluentbit_buffer_mem_limit: '128M'
-fluentbit_include_d: false
 
 fluentbit_inputs: ""
 #  - name: tail
@@ -78,3 +77,16 @@ fluentbit_parsers: ""
 #    time_key: time
 #    time_format: '%Y-%m-%dT%H:%M:%S %z'
 #    time_keep: "on"
+
+fluentbit_include_d: false
+fluentbit_extra_confd: []
+#  - name: postgresql
+#    content: |
+#      [INPUT]
+#          Name tail
+#          Path /var/log/postgresql/*.log
+#          Parser none
+#          Tag postgres
+#          Path_Key logfile
+#          DB /etc/fluent-bit/postgres.db
+#          DB.locking True

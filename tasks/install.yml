@@ -199,7 +199,26 @@
   ansible.builtin.file:
     path: "{{ fluentbit_install_dir }}/conf.d/empty.conf"
     state: touch
-  when: fluentbit_include_d | bool
+  when:
+    - fluentbit_include_d | bool
+    - fluentbit_extra_confd is defined
+    - fluentbit_extra_confd | length == 0
+
+- name: "Create conf.d config"
+  ansible.builtin.template:
+    src: custom.conf.j2
+    dest: "{{ fluentbit_install_dir }}/conf.d/{{ item.name }}.conf"
+    owner: root
+    group: root
+    mode: '0644'
+  with_items: "{{ fluentbit_extra_confd }}"
+  when:
+    - fluentbit_include_d | bool
+    - fluentbit_extra_confd is defined
+    - fluentbit_extra_confd | length > 0
+  notify:
+    - stop fluent-bit
+    - start fluent-bit
 
 - name: "Create parser file {{ fluentbit_install_dir }}/parsers.conf"
   ansible.builtin.template:
