@@ -4,10 +4,17 @@
     name: gpg
     state: present
 
-- name: "Debian | Add fluentbit apt signing key."
-  ansible.builtin.apt_key:
+#- name: "Debian | Add fluentbit apt signing key."
+#  ansible.builtin.apt_key:
+#    url: "{{ fluentbit_repository_key }}"
+#    state: present
+#  when: fluentbit_repository_key is defined and fluentbit_repository_key|length > 0
+
+- name: "DEBIAN | Add fluentbit apt signing key."
+  ansible.builtin.get_url:
     url: "{{ fluentbit_repository_key }}"
-    state: present
+    dest: /etc/apt/trusted.gpg.d/fluentbit.asc
+    mode: '0644'
   when: fluentbit_repository_key is defined and fluentbit_repository_key|length > 0
 
 - name: "Debian | Add fluentbit repo to apt list"

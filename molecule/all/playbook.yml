@@ -4,11 +4,6 @@
   become: true
   any_errors_fatal: true
 
-  tasks:
-    - name: Include role
-      ansible.builtin.include_role:
-        name: ansible-apps_fluentbit
-
   vars:
     fluentbit_inputs:
       - name: tail
@@ -33,3 +28,8 @@
         time_key: time
         time_format: '%Y-%m-%dT%H:%M:%S %z'
         time_keep: 'on'
+
+  tasks:
+    - name: Include role
+      ansible.builtin.include_role:
+        name: ansible-apps_fluentbit
