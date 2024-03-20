@@ -42,11 +42,13 @@
     - name: "Redhat | Install by repository"
       when: fluentbit_install_mode == 'repo'
       block:
-        - include_tasks: setup-Debian.yml
+        - name: Debian tasks
+          ansible.builtin.include_tasks: setup-Debian.yml
           when:
             - ansible_os_family == 'Debian'
 
-        - include_tasks: setup-Redhat.yml
+        - name: Redhat tasks
+          ansible.builtin.include_tasks: setup-Redhat.yml
           when:
             - ansible_os_family == 'RedHat' or ansible_distribution == 'OracleLinux'
 
@@ -93,7 +95,7 @@
           changed_when: false
 
         - name: "Build the sources (5min)"
-          ansible.builtin.make:
+          community.general.make:
             chdir: "/tmp/fluent-bit-{{ fluentbit_version }}/build/"
 
 
@@ -146,7 +148,7 @@
             mode: 0755
             remote_src: true
           notify:
-            - start fluent-bit
+            - Start fluent-bit
 
         - name: "Clean source temp directory"
           ansible.builtin.file:
@@ -165,14 +167,14 @@
             mode: '0644'
 
     - name: "Modify hard nofile limits for root domain"
-      ansible.builtin.pam_limits:
+      community.general.pam_limits:
         domain: root
         limit_type: '-'
         limit_item: nofile
         value: "{{ fluentbit_nofile_limit }}"
 
     - name: "Modify hard nofile limits for wildcard domain"
-      ansible.builtin.pam_limits:
+      community.general.pam_limits:
         domain: '*'
         limit_type: '-'
         limit_item: nofile
@@ -184,7 +186,7 @@
         enabled: true
         daemon_reload: true
 
-- name: "Create config file {{ fluentbit_install_dir }}/fluent-bit.conf"
+- name: "Create config file"
   ansible.builtin.template:
     src: fluent-bit.conf.j2
     dest: "{{ fluentbit_install_dir }}/fluent-bit.conf"
@@ -192,13 +194,14 @@
     group: root
     mode: '0644'
   notify:
-    - stop fluent-bit
-    - start fluent-bit
+    - Stop fluent-bit
+    - Start fluent-bit
 
 - name: Create empty conf file
   ansible.builtin.file:
     path: "{{ fluentbit_install_dir }}/conf.d/empty.conf"
     state: touch
+    mode: '0644'
   when:
     - fluentbit_include_d | bool
     - fluentbit_extra_confd is defined
@@ -217,10 +220,10 @@
     - fluentbit_extra_confd is defined
     - fluentbit_extra_confd | length > 0
   notify:
-    - stop fluent-bit
-    - start fluent-bit
+    - Stop fluent-bit
+    - Start fluent-bit
 
-- name: "Create parser file {{ fluentbit_install_dir }}/parsers.conf"
+- name: "Create parser file"
   ansible.builtin.template:
     src: parsers.conf.j2
     dest: "{{ fluentbit_install_dir }}/parsers.conf"
@@ -228,10 +231,10 @@
     group: root
     mode: '0644'
   notify:
-    - stop fluent-bit
-    - start fluent-bit
+    - Stop fluent-bit
+    - Start fluent-bit
 
-- name: start fluent-bit
+- name: Start fluent-bit
   ansible.builtin.service:
     name: "{{ fluentbit_pkg_name }}"
     state: started
