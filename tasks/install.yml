@@ -43,12 +43,12 @@
       when: fluentbit_install_mode == 'repo'
       block:
         - name: Debian tasks
-          ansible.builtin.include_tasks: setup-Debian.yml
+          ansible.builtin.include_tasks: setup-debian.yml
           when:
             - ansible_os_family == 'Debian'
 
         - name: Redhat tasks
-          ansible.builtin.include_tasks: setup-Redhat.yml
+          ansible.builtin.include_tasks: setup-redhat.yml
           when:
             - ansible_os_family == 'RedHat' or ansible_distribution == 'OracleLinux'
 

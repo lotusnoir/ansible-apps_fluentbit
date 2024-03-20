@@ -1,14 +1,12 @@
 ---
-- name: "Debian | Install gpg package."
+- name: "DEBIAN | Install gpg package."
   ansible.builtin.package:
     name: gpg
     state: present
-
-#- name: "Debian | Add fluentbit apt signing key."
-#  ansible.builtin.apt_key:
-#    url: "{{ fluentbit_repository_key }}"
-#    state: present
-#  when: fluentbit_repository_key is defined and fluentbit_repository_key|length > 0
+  register: pkg_result
+  retries: 12
+  delay: 10
+  until: pkg_result is success
 
 - name: "DEBIAN | Add fluentbit apt signing key."
   ansible.builtin.get_url:
@@ -17,16 +15,20 @@
     mode: '0644'
   when: fluentbit_repository_key is defined and fluentbit_repository_key|length > 0
 
-- name: "Debian | Add fluentbit repo to apt list"
+- name: "DEBIAN | Add fluentbit repo to apt list"
   ansible.builtin.apt_repository:
     repo: "{{ fluentbit_repository }}"
     state: present
     filename: "{{ fluentbit_repository_file }}"
   when: fluentbit_repository is defined and fluentbit_repository|length > 0
 
-- name: "Debian | Update apt cache."
+- name: "DEBIAN | Update apt cache."
   ansible.builtin.apt:
     update_cache: true
     cache_valid_time: 600
+  register: pkg_result
+  retries: 12
+  delay: 10
+  until: pkg_result is success
   changed_when: false
   when: fluentbit_repository is defined and fluentbit_repository|length > 0
