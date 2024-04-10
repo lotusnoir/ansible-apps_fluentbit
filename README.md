@@ -30,6 +30,31 @@ none
 
 See [variables](/defaults/main.yml) for more details.
 
+vars:
+  fluentbit_inputs:
+    - name: tail
+      alias: vms
+      tag: vms
+      path: /tmp/vms.log
+      db: /tmp/vms.db
+      parser: syslog
+  fluentbit_filters:
+    - name: modify
+      alias: add_from_syslog
+      match: '*'
+      rules:
+        - "Add from_syslog true"
+  fluentbit_outputs:
+    - name: 'null'
+      match: '*'
+  fluentbit_parsers:
+    - name: syslog
+      format: regex
+      regex: '^(?<register_time>[^ ]*) (?<source>[^ ]*) (?<level>[^ ]*) *(?<message>.*)$'
+      time_key: time
+      time_format: '%Y-%m-%dT%H:%M:%S %z'
+      time_keep: 'on'
+
 ## Examples
 
         ---
