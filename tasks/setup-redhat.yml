@@ -1,13 +1,9 @@
 ---
-- name: "RedHat | Create repo file"
-  ansible.builtin.copy:
-    dest: "/etc/yum.repos.d/fluent-bit.repo"
-    mode: 0644
-    content: |
-      [fluent-bit]
-      name = Fluent Bit
-      baseurl = https://packages.fluentbit.io/centos/{{ ansible_distribution_major_version }}/$basearch/
-      gpgcheck=1
-      gpgkey=https://packages.fluentbit.io/fluentbit.key
-      repo_gpgcheck=1
-      enabled=1
+- name: "REDHAT: Add repository"
+  ansible.builtin.yum_repository:
+    name: fluent-bit
+    description: "Fluent Bit"
+    baseurl: "https://packages.fluentbit.io/centos/$releasever/"
+    enabled: true
+    gpgcheck: false
+    gpgkey: "https://packages.fluentbit.io/fluentbit.key"
