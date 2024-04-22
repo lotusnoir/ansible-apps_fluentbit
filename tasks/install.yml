@@ -197,11 +197,12 @@
     - Stop fluent-bit
     - Start fluent-bit
 
-- name: Create empty conf file
+- name: "Create empty conf file"
   ansible.builtin.file:
     path: "{{ fluentbit_install_dir }}/conf.d/empty.conf"
     state: touch
     mode: '0644'
+  changed_when: false
   when:
     - fluentbit_include_d | bool
     - fluentbit_extra_confd is defined
