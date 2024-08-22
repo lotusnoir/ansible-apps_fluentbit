@@ -13,6 +13,10 @@
     url: "{{ fluentbit_repository_key }}"
     dest: /etc/apt/trusted.gpg.d/fluentbit.asc
     mode: '0644'
+  register: key_result
+  retries: 12
+  delay: 10
+  until: key_result is success
   when: fluentbit_repository_key is defined and fluentbit_repository_key|length > 0
 
 - name: "DEBIAN | Add fluentbit repo to apt list"
