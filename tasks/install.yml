@@ -17,7 +17,7 @@
       ansible.builtin.file:
         path: '{{ item }}'
         state: directory
-        mode: 0755
+        mode: '0755'
       with_items:
         - "{{ fluentbit_log_dir }}"
         - "{{ fluentbit_install_dir }}"
@@ -65,7 +65,7 @@
             url: '{{ fluentbit_tgz_url }}'
             dest: /tmp/{{ fluentbit_tgz }}
             timeout: 120
-            mode: 0644
+            mode: '0644'
 
         - name: "Unarchive {{ fluentbit_tgz }}"
           ansible.builtin.unarchive:
@@ -145,7 +145,7 @@
           ansible.builtin.copy:
             src: "/tmp/fluent-bit-{{ fluentbit_version }}/build/bin/fluent-bit"
             dest: "{{ fluentbit_binary_name }}"
-            mode: 0755
+            mode: '0755'
             remote_src: true
           notify:
             - Start fluent-bit
