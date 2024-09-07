@@ -14,6 +14,15 @@ scenario:
     # - verify
     - destroy
 platforms:
+  - name: apps-fluentbit-ubuntu18
+    pre_build_image: true
+    image: lotusnoir/ansible_molecule_test_images:ubuntu18
+    docker_host: "${DOCKER_HOST:-unix://var/run/docker.sock}"
+    capabilities: ['NET_ADMIN']
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:rw
+    groups:
+      - python3
   - name: apps-fluentbit-ubuntu20
     pre_build_image: true
     image: lotusnoir/ansible_molecule_test_images:ubuntu20
@@ -29,6 +38,12 @@ platforms:
       - /sys/fs/cgroup:/sys/fs/cgroup:rw
     groups:
       - python3
+  - name: apps-fluentbit-debian10
+    pre_build_image: true
+    image: lotusnoir/ansible_molecule_test_images:debian10
+    docker_host: "${DOCKER_HOST:-unix://var/run/docker.sock}"
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:rw
   - name: apps-fluentbit-debian11
     pre_build_image: true
     image: lotusnoir/ansible_molecule_test_images:debian11
@@ -48,6 +63,14 @@ platforms:
   - name: apps-fluentbit-rocky9
     pre_build_image: true
     image: lotusnoir/ansible_molecule_test_images:rocky9
+    docker_host: "${DOCKER_HOST:-unix://var/run/docker.sock}"
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:rw
+    groups:
+      - python3
+  - name: apps-fluentbit-oraclelinux8
+    pre_build_image: true
+    image: lotusnoir/ansible_molecule_test_images:oraclelinux8
     docker_host: "${DOCKER_HOST:-unix://var/run/docker.sock}"
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:rw
