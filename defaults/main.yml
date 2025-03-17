@@ -1,22 +1,22 @@
 ---
-#install mode
-fluentbit_install_mode: "repo" #or build
-fluentbit_nofile_limit: '262144'
-fluentbit_install_dir: '/etc/fluent-bit'
+### Install mode
+fluentbit_install_mode: "repo"
+fluentbit_nofile_limit: "262144"
+fluentbit_install_dir: "/etc/fluent-bit"
 # when build
 fluentbit_version: "2.1.9"
-fluentbit_binary_name: '/usr/local/bin/fluent-bit'
+fluentbit_binary_name: "/usr/local/bin/fluent-bit"
 
-# Config file
-fluentbit_log_dir: '/var/log/fluentbit'
-fluentbit_loglevel: 'info'
-fluentbit_http_server: 'Off'
-fluentbit_http_bind: '0.0.0.0'
-fluentbit_http_port: '9104'
-fluentbit_buffer_path: '/tmp'
-fluentbit_buffer_sync: 'normal'
-fluentbit_buffer_checksum: 'off'
-fluentbit_buffer_mem_limit: '128M'
+### Config file
+fluentbit_log_dir: "/var/log/fluentbit"
+fluentbit_loglevel: "info"
+fluentbit_http_server: "Off"
+fluentbit_http_bind: "0.0.0.0"
+fluentbit_http_port: "9104"
+fluentbit_buffer_path: "/tmp"
+fluentbit_buffer_sync: "normal"
+fluentbit_buffer_checksum: "off"
+fluentbit_buffer_mem_limit: "128M"
 
 fluentbit_inputs: ""
 #  - name: tail
