@@ -15,9 +15,9 @@
   block:
     - name: "Ensure directories exist"
       ansible.builtin.file:
-        path: '{{ item }}'
+        path: "{{ item }}"
         state: directory
-        mode: '0755'
+        mode: "0755"
       with_items:
         - "{{ fluentbit_log_dir }}"
         - "{{ fluentbit_install_dir }}"
@@ -32,7 +32,7 @@
           .width 5 82 12 12 10
         owner: root
         group: root
-        mode: '0644'
+        mode: "0644"
 
     - name: "Install ca-certificates package"
       ansible.builtin.package:
@@ -47,7 +47,7 @@
           when:
             - ansible_os_family == 'Debian'
 
-        - name: Redhat tasks
+        - name: "Redhat tasks"
           ansible.builtin.include_tasks: setup-redhat.yml
           when:
             - ansible_os_family == 'RedHat' or ansible_distribution == 'OracleLinux'
@@ -57,22 +57,29 @@
             name: "{{ fluentbit_pkg_name }}"
             state: present
 
+        - name: "Ensure LimitNOFILE is set for systemd"
+          ansible.builtin.lineinfile:
+            path: /usr/lib/systemd/system/fluent-bit.service
+            regexp: "^LimitNOFILE="
+            insertafter: "^Type=simple"
+            line: "LimitNOFILE=65536"
+
     - name: "Install by sources"
       when: fluentbit_install_mode == 'build'
       block:
         - name: "Download the version ({{ fluentbit_version }})"
           ansible.builtin.get_url:
-            url: '{{ fluentbit_tgz_url }}'
+            url: "{{ fluentbit_tgz_url }}"
             dest: /tmp/{{ fluentbit_tgz }}
             timeout: 120
-            mode: '0644'
+            mode: "0644"
 
         - name: "Unarchive {{ fluentbit_tgz }}"
           ansible.builtin.unarchive:
             remote_src: true
             src: "/tmp/{{ fluentbit_tgz }}"
             dest: "/tmp/"
-            mode: '1777'
+            mode: "1777"
 
         - name: "Install build requirement packages"
           ansible.builtin.package:
@@ -97,7 +104,6 @@
         - name: "Build the sources (5min)"
           community.general.make:
             chdir: "/tmp/fluent-bit-{{ fluentbit_version }}/build/"
-
 
         #    ### Probleme with glic when building locally
         #    - name: "LOCAL - Download the version ({{ fluentbit_version }})"
@@ -145,7 +151,7 @@
           ansible.builtin.copy:
             src: "/tmp/fluent-bit-{{ fluentbit_version }}/build/bin/fluent-bit"
             dest: "{{ fluentbit_binary_name }}"
-            mode: '0755'
+            mode: "0755"
             remote_src: true
           notify:
             - Start fluent-bit
@@ -164,19 +170,19 @@
             dest: /lib/systemd/system/fluent-bit.service
             owner: root
             group: root
-            mode: '0644'
+            mode: "0644"
 
     - name: "Modify hard nofile limits for root domain"
       community.general.pam_limits:
         domain: root
-        limit_type: '-'
+        limit_type: "-"
         limit_item: nofile
         value: "{{ fluentbit_nofile_limit }}"
 
     - name: "Modify hard nofile limits for wildcard domain"
       community.general.pam_limits:
-        domain: '*'
-        limit_type: '-'
+        domain: "*"
+        limit_type: "-"
         limit_item: nofile
         value: "{{ fluentbit_nofile_limit }}"
 
@@ -192,7 +198,7 @@
     dest: "{{ fluentbit_install_dir }}/fluent-bit.conf"
     owner: root
     group: root
-    mode: '0644'
+    mode: "0644"
   notify:
     - Stop fluent-bit
     - Start fluent-bit
@@ -201,7 +207,7 @@
   ansible.builtin.file:
     path: "{{ fluentbit_install_dir }}/conf.d/empty.conf"
     state: touch
-    mode: '0644'
+    mode: "0644"
   changed_when: false
   when:
     - fluentbit_include_d | bool
@@ -214,7 +220,7 @@
     dest: "{{ fluentbit_install_dir }}/conf.d/{{ item.name }}.conf"
     owner: root
     group: root
-    mode: '0644'
+    mode: "0644"
   with_items: "{{ fluentbit_extra_confd }}"
   when:
     - fluentbit_include_d | bool
@@ -230,7 +236,7 @@
     dest: "{{ fluentbit_install_dir }}/parsers.conf"
     owner: root
     group: root
-    mode: '0644'
+    mode: "0644"
   notify:
     - Stop fluent-bit
     - Start fluent-bit
