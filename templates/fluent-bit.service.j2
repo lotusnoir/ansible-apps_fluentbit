@@ -6,6 +6,8 @@ After=network.target
 [Service]
 Type=simple
 LimitNOFILE=65536
+SupplementaryGroups=adm
+UMask=0027
 ExecStart=/usr/local/bin/fluent-bit -c /etc/fluent-bit/fluent-bit.conf
 Restart=always
 

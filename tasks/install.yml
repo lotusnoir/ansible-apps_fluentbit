@@ -18,10 +18,22 @@
         path: "{{ item }}"
         state: directory
         mode: "0755"
+        owner: root
+        group: root
       with_items:
-        - "{{ fluentbit_log_dir }}"
         - "{{ fluentbit_install_dir }}"
         - "{{ fluentbit_install_dir }}/conf.d"
+        - "{{ fluentbit_buffer_path }}"
+
+    - name: "Ensure directories exist"
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        owner: root
+        group: adm
+        mode: "2755"
+      with_items:
+        - "{{ fluentbit_log_dir }}"
 
     - name: "Make sqlitle human readable db file"
       ansible.builtin.copy:
