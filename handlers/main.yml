@@ -1,17 +1,19 @@
 ---
 - name: Restart fluent-bit
   ansible.builtin.service:
-    name: "{{ fluentbit_pkg_name }}"
+    name: "fluent-bit"
     state: restarted
+  when: fluentbit_start_service
 
 - name: Stop fluent-bit
   ansible.builtin.service:
-    name: "{{ fluentbit_pkg_name }}"
+    name: "fluent-bit"
     state: stopped
 
 - name: Start fluent-bit
   ansible.builtin.service:
-    name: "{{ fluentbit_pkg_name }}"
+    name: "fluent-bit"
     state: started
   retries: 3
   delay: 3
+  when: fluentbit_start_service
