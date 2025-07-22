@@ -68,20 +68,20 @@
           ansible.builtin.package:
             name: "{{ fluentbit_pkg_name }}"
             state: present
-          register: pkg_result
+          register: __pkg_result
           retries: 12
           delay: 10
-          until: pkg_result is success
+          until: __pkg_result is success
           when: ansible_os_family == 'Debian'
 
         - name: "REDHAT | Install fluentbit package"
           ansible.builtin.dnf:
             name: "{{ fluentbit_pkg_name }}"
             nobest: true
-          register: pkg_result
+          register: __pkg_result
           retries: 12
           delay: 10
-          until: pkg_result is success
+          until: __pkg_result is success
           when: ansible_os_family in ["RedHat", "Rocky", "OracleLinux"]
 
         - name: "Ensure LimitNOFILE is set for systemd"

@@ -3,10 +3,10 @@
   ansible.builtin.package:
     name: gpg
     state: present
-  register: pkg_result
+  register: __pkg_result
   retries: 12
   delay: 10
-  until: pkg_result is success
+  until: __pkg_result is success
 
 - name: "DEBIAN | Add fluentbit apt signing key."
   ansible.builtin.get_url:
@@ -30,9 +30,9 @@
   ansible.builtin.apt:
     update_cache: true
     cache_valid_time: 600
-  register: pkg_result
+  register: __pkg_result
   retries: 12
   delay: 10
-  until: pkg_result is success
+  until: __pkg_result is success
   changed_when: false
   when: fluentbit_repository is defined and fluentbit_repository|length > 0
