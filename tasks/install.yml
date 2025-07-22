@@ -68,7 +68,7 @@
 
 - name: "Start fluent-bit"
   ansible.builtin.service:
-    name: "fluent-bit"
+    name: "{{ _fluentbit_service_name }}"
     enabled: true
     daemon_reload: true
     state: started

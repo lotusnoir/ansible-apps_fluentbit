@@ -4,17 +4,18 @@ fluentbit_install_method: repo  # or build (not working)
 fluentbit_install_force: false
 fluentbit_start_service: true
 
+
 ### SRC install
 fluentbit_install_dir: "/opt/fluent-bit"
 fluentbit_bin_name: "fluent-bit"
 # fluentbit_install_origin: internet  # or internet
 # fluentbit_dl_executor: host  # or localhost
 fluentbit_version: "4.0.4"  # or latest
-fluentbit_distrib: "linux"
+# fluentbit_distrib: "linux"
 # fluentbit_arch: "amd64"
-fluentbit_pkg_name: "v{{ fluentbit_version }}.tar.gz"
-fluentbit_dl_url: "https://github.com/fluent/fluent-bit/archive/{{ fluentbit_pkg_name }}"
-fluentbit_temp_dir: "/tmp"
+# fluentbit_pkg_name: "v{{ fluentbit_version }}.tar.gz"
+# fluentbit_dl_url: "https://github.com/fluent/fluent-bit/archive/{{ fluentbit_pkg_name }}"
+# fluentbit_temp_dir: "/tmp"
 
 ### Config
 fluentbit_config_dir: "/etc/fluent-bit"

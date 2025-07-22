@@ -14,7 +14,7 @@
 
     - name: "Ensure LimitNOFILE is set for systemd"
       ansible.builtin.lineinfile:
-        path: /usr/lib/systemd/system/fluent-bit.service
+        path: /lib/systemd/system/fluent-bit.service
         regexp: "^LimitNOFILE="
         insertafter: "^Type=simple"
         line: "LimitNOFILE={{ fluentbit_nofile_limit }}"
