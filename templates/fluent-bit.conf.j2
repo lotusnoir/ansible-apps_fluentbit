@@ -25,7 +25,7 @@
     storage.backlog.mem_limit {{ fluentbit_buffer_mem_limit }}
 
 
-{% if fluentbit_extra_confd is defined and fluentbit_extra_confd | length > 0 %}
+{% if fluentbit_include_d %}
 @INCLUDE conf.d/*.conf
 {% endif %}
 

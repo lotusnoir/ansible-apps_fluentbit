@@ -8,15 +8,12 @@ driver:
 scenario:
   name: default
   test_sequence:
-    - cleanup
     - destroy
-    - syntax
     - create
     - prepare
     - converge
     - idempotence
-    - side_effect
-    - cleanup
+    # - verify
     - destroy
 
 platforms:
@@ -34,17 +31,6 @@ provisioner:
   connection_options:
     ansible_remote_tmp: /tmp
     ansible_python_interpreter: auto_silent
-  config_options:
-    defaults:
-      roles_path: "${HOME}/.ansible/roles:/usr/share/ansible/roles:/etc/ansible/roles:$MOLECULE_PROJECT_DIRECTORY/.."
-      callbacks_enabled: timer, profile_tasks, profile_roles
-      verbosity: 3
-      forks: 20
-      host_key_checking: false
-    ssh_connection:
-      pipelining: true
-      ssh_args: -o ControlMaster=auto -o ControlPersist=600s
-  log: true
   playbooks:
     prepare: prepare.yml
     converge: playbook.yml

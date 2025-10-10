@@ -1,54 +1,223 @@
 ---
-- name: "Check for binary"
+- name: "Check if executable exist"
   ansible.builtin.stat:
-    path: "{% if fluentbit_install_method == 'src' %}{{ fluentbit_install_dir }}{{ fluentbit_bin_name }}{% else %}/opt/fluent-bit/bin/fluent-bit{% endif %}"
+    path: "{{ fluentbit_binary_name }}"
+  register: fluentbit_binary
+
+- name: "Check version"
+  ansible.builtin.command: "{{ fluentbit_binary_name }} --version | grep -oE '[^ ]+$'"
   changed_when: false
-  register: __installed_bin
+  register: fluentbit_binary_version
+  when: fluentbit_binary.stat.exists
 
-- name: "Repo install tasks"
-  ansible.builtin.include_tasks: install_repo.yml
-  when: fluentbit_install_method == "repo"
+- name: "Install or upgrade fuentbit"
+  when: not fluentbit_binary.stat.exists or (fluentbit_binary_version is defined and fluentbit_version not in fluentbit_binary_version.stdout)
+  block:
+    - name: "Ensure directories exist"
+      ansible.builtin.file:
+        path: '{{ item }}'
+        state: directory
+        mode: '0755'
+      with_items:
+        - "{{ fluentbit_log_dir }}"
+        - "{{ fluentbit_install_dir }}"
+        - "{{ fluentbit_install_dir }}/conf.d"
 
-- name: "Sources install tasks"
-  ansible.builtin.include_tasks: install_build.yml
-  when: fluentbit_install_method == "build"
+    - name: "Make sqlitle human readable db file"
+      ansible.builtin.copy:
+        dest: "/root/.sqliterc"
+        content: |
+          .headers on
+          .mode column
+          .width 5 82 12 12 10
+        owner: root
+        group: root
+        mode: '0644'
 
-- name: "Modify hard nofile limits for root domain"
-  community.general.pam_limits:
-    domain: root
-    limit_type: "-"
-    limit_item: nofile
-    value: "{{ fluentbit_nofile_limit }}"
-  when: fluentbit_update_pam_limits
+    - name: "Install ca-certificates package"
+      ansible.builtin.package:
+        name: ca-certificates
+        state: present
 
-- name: "Modify hard nofile limits for wildcard domain"
-  community.general.pam_limits:
-    domain: "*"
-    limit_type: "-"
-    limit_item: nofile
-    value: "{{ fluentbit_nofile_limit }}"
-  when: fluentbit_update_pam_limits
+    - name: "Redhat | Install by repository"
+      when: fluentbit_install_mode == 'repo'
+      block:
+        - name: Debian tasks
+          ansible.builtin.include_tasks: setup-debian.yml
+          when:
+            - ansible_os_family == 'Debian'
+
+        - name: Redhat tasks
+          ansible.builtin.include_tasks: setup-redhat.yml
+          when:
+            - ansible_os_family == 'RedHat' or ansible_distribution == 'OracleLinux'
+
+        - name: "Install fluentbit package"
+          ansible.builtin.package:
+            name: "{{ fluentbit_pkg_name }}"
+            state: present
+
+    - name: "Install by sources"
+      when: fluentbit_install_mode == 'build'
+      block:
+        - name: "Download the version ({{ fluentbit_version }})"
+          ansible.builtin.get_url:
+            url: '{{ fluentbit_tgz_url }}'
+            dest: /tmp/{{ fluentbit_tgz }}
+            timeout: 120
+            mode: '0644'
+
+        - name: "Unarchive {{ fluentbit_tgz }}"
+          ansible.builtin.unarchive:
+            remote_src: true
+            src: "/tmp/{{ fluentbit_tgz }}"
+            dest: "/tmp/"
+            mode: '1777'
+
+        - name: "Install build requirement packages"
+          ansible.builtin.package:
+            name: "{{ item }}"
+            state: present
+          with_items:
+            - cmake
+            - g++
+            - flex
+            - bison
+            - libssl-dev
+            - libsystemd-dev
+            - autoconf
+            - libsasl2-dev
+
+        - name: "Configure source"
+          ansible.builtin.command: cmake -DFLB_OUT_KAFKA=On -DFLB_HTTP_SERVER=on -DFLB_EXAMPLES=off ..
+          args:
+            chdir: "/tmp/fluent-bit-{{ fluentbit_version }}/build/"
+          changed_when: false
+
+        - name: "Build the sources (5min)"
+          community.general.make:
+            chdir: "/tmp/fluent-bit-{{ fluentbit_version }}/build/"
+
+
+        #    ### Probleme with glic when building locally
+        #    - name: "LOCAL - Download the version ({{ fluentbit_version }})"
+        #      become: false
+        #      get_url:
+        #        url: '{{ fluentbit_tgz_url }}'
+        #        dest: /tmp/{{ fluentbit_tgz }}
+        #        timeout: 120
+        #        mode: 0644
+        #      delegate_to: localhost
+        #      run_once: true
+        #
+        #    - name: "LOCAL - Unarchive {{ fluentbit_tgz }}"
+        #      become: false
+        #      unarchive:
+        #        remote_src: true
+        #        src: "/tmp/{{ fluentbit_tgz }}"
+        #        dest: "/tmp/"
+        #        mode: '1777'
+        #      delegate_to: localhost
+        #      run_once: true
+        #
+        #    - name: "LOCAL - Add options on make"
+        #      become: false
+        #      command: cmake -DFLB_OUT_KAFKA=On -DFLB_HTTP_SERVER=on -DFLB_SHARED_LIB=off -DFLB_EXAMPLES=off ..
+        #      args:
+        #        chdir: "/tmp/fluent-bit-{{ fluentbit_version }}/build/"
+        #      delegate_to: localhost
+        #      run_once: true
+        #
+        #    - name: "LOCAL - Build the sources (5min)"
+        #      become: false
+        #      make:
+        #        chdir: "/tmp/fluent-bit-{{ fluentbit_version }}/build/"
+        #      delegate_to: localhost
+        #      run_once: true
+
+        - name: "Stop fluent-bit service if present"
+          ansible.builtin.service:
+            name: fluent-bit
+            state: stopped
+          when: fluentbit_binary.stat.exists
+
+        - name: "Copy executable to {{ fluentbit_binary_name }}"
+          ansible.builtin.copy:
+            src: "/tmp/fluent-bit-{{ fluentbit_version }}/build/bin/fluent-bit"
+            dest: "{{ fluentbit_binary_name }}"
+            mode: '0755'
+            remote_src: true
+          notify:
+            - Start fluent-bit
+
+        - name: "Clean source temp directory"
+          ansible.builtin.file:
+            path: "{{ item }}"
+            state: absent
+          with_items:
+            - "/tmp/fluent-bit-{{ fluentbit_version }}"
+            - "/tmp/{{ fluentbit_tgz }}"
+
+        - name: "Create a systemd init script"
+          ansible.builtin.template:
+            src: fluent-bit.service.j2
+            dest: /lib/systemd/system/fluent-bit.service
+            owner: root
+            group: root
+            mode: '0644'
+
+    - name: "Modify hard nofile limits for root domain"
+      community.general.pam_limits:
+        domain: root
+        limit_type: '-'
+        limit_item: nofile
+        value: "{{ fluentbit_nofile_limit }}"
+
+    - name: "Modify hard nofile limits for wildcard domain"
+      community.general.pam_limits:
+        domain: '*'
+        limit_type: '-'
+        limit_item: nofile
+        value: "{{ fluentbit_nofile_limit }}"
+
+    - name: "Enable fluent-bit service"
+      ansible.builtin.service:
+        name: "{{ fluentbit_pkg_name }}"
+        enabled: true
+        daemon_reload: true
 
 - name: "Create config file"
   ansible.builtin.template:
     src: fluent-bit.conf.j2
-    dest: "{{ fluentbit_config_dir }}/fluent-bit.conf"
+    dest: "{{ fluentbit_install_dir }}/fluent-bit.conf"
     owner: root
     group: root
-    mode: "0644"
+    mode: '0644'
   notify:
     - Stop fluent-bit
     - Start fluent-bit
 
+- name: "Create empty conf file"
+  ansible.builtin.file:
+    path: "{{ fluentbit_install_dir }}/conf.d/empty.conf"
+    state: touch
+    mode: '0644'
+  changed_when: false
+  when:
+    - fluentbit_include_d | bool
+    - fluentbit_extra_confd is defined
+    - fluentbit_extra_confd | length == 0
+
 - name: "Create conf.d config"
   ansible.builtin.template:
     src: custom.conf.j2
-    dest: "{{ fluentbit_config_dir }}/conf.d/{{ item.name }}.conf"
+    dest: "{{ fluentbit_install_dir }}/conf.d/{{ item.name }}.conf"
     owner: root
     group: root
-    mode: "0644"
+    mode: '0644'
   with_items: "{{ fluentbit_extra_confd }}"
   when:
+    - fluentbit_include_d | bool
     - fluentbit_extra_confd is defined
     - fluentbit_extra_confd | length > 0
   notify:
@@ -58,22 +227,19 @@
 - name: "Create parser file"
   ansible.builtin.template:
     src: parsers.conf.j2
-    dest: "{{ fluentbit_config_dir }}/parsers.conf"
+    dest: "{{ fluentbit_install_dir }}/parsers.conf"
     owner: root
     group: root
-    mode: "0644"
+    mode: '0644'
   notify:
     - Stop fluent-bit
     - Start fluent-bit
 
-- name: "Start fluent-bit"
+- name: Start fluent-bit
   ansible.builtin.service:
-    name: "{{ _fluentbit_service_name }}"
-    enabled: true
-    daemon_reload: true
+    name: "{{ fluentbit_pkg_name }}"
     state: started
-  register: __result
+  register: result
   retries: 3
   delay: 3
-  until: __result is not failed
-  when: fluentbit_start_service
+  until: result is not failed

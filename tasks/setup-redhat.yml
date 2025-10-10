@@ -7,12 +7,3 @@
     enabled: true
     gpgcheck: false
     gpgkey: "https://packages.fluentbit.io/fluentbit.key"
-
-- name: "REDHAT | Install fluentbit package"
-  ansible.builtin.dnf:
-    name: "fluent-bit"
-    nobest: true
-  register: __pkg_result
-  retries: 12
-  delay: 10
-  until: __pkg_result is success
