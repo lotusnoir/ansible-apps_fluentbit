@@ -5,7 +5,10 @@ After=network.target
 
 [Service]
 Type=simple
-ExecStart=/usr/local/bin/fluent-bit -c /etc/fluent-bit/fluent-bit.conf
+LimitNOFILE={{ fluentbit_nofile_limit }}
+SupplementaryGroups=adm
+UMask=0027
+ExecStart={{ fluentbit_install_dir }}/{{ fluentbit_bin_name }} -c {{ fluentbit_config_dir }}/fluent-bit.conf
 Restart=always
 
 [Install]

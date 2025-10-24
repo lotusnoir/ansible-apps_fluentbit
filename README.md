@@ -22,6 +22,7 @@
 ## Description
 
 Deploy [fluentbit](https://fluentbit.io/) log forwarder system using ansible.
+
 ## Requirements
 
 none
@@ -64,7 +65,6 @@ vars:
           gather_facts: true
           roles:
             - role: ansible-apps_fluentbit
-
 
 ## License
 

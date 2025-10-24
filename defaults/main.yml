@@ -1,22 +1,35 @@
 ---
-#install mode
-fluentbit_install_mode: "repo" #or build
-fluentbit_nofile_limit: '262144'
-fluentbit_install_dir: '/etc/fluent-bit'
-# when build
-fluentbit_version: "2.1.9"
-fluentbit_binary_name: '/usr/local/bin/fluent-bit'
+### Install
+fluentbit_install_method: repo  # or build (not working)
+fluentbit_install_force: false
+fluentbit_start_service: true
 
-# Config file
-fluentbit_log_dir: '/var/log/fluentbit'
-fluentbit_loglevel: 'info'
-fluentbit_http_server: 'Off'
-fluentbit_http_bind: '0.0.0.0'
-fluentbit_http_port: '9104'
-fluentbit_buffer_path: '/tmp'
-fluentbit_buffer_sync: 'normal'
-fluentbit_buffer_checksum: 'off'
-fluentbit_buffer_mem_limit: '128M'
+
+### SRC install
+fluentbit_install_dir: "/opt/fluent-bit"
+fluentbit_bin_name: "fluent-bit"
+# fluentbit_install_origin: internet  # or internet
+# fluentbit_dl_executor: host  # or localhost
+fluentbit_version: "4.0.4"  # or latest
+# fluentbit_distrib: "linux"
+# fluentbit_arch: "amd64"
+# fluentbit_pkg_name: "v{{ fluentbit_version }}.tar.gz"
+# fluentbit_dl_url: "https://github.com/fluent/fluent-bit/archive/{{ fluentbit_pkg_name }}"
+# fluentbit_temp_dir: "/tmp"
+
+### Config
+fluentbit_config_dir: "/etc/fluent-bit"
+fluentbit_update_pam_limits: false
+fluentbit_nofile_limit: "262144"
+fluentbit_log_dir: "/var/log/fluentbit"
+fluentbit_loglevel: "info"
+fluentbit_http_server: "Off"
+fluentbit_http_bind: "0.0.0.0"
+fluentbit_http_port: "9104"
+fluentbit_buffer_path: "/var/lib/fluent-bit/storage/"
+fluentbit_buffer_sync: "normal"
+fluentbit_buffer_checksum: "off"
+fluentbit_buffer_mem_limit: "128M"
 
 fluentbit_inputs: ""
 #  - name: tail
@@ -78,7 +91,6 @@ fluentbit_parsers: ""
 #    time_format: '%Y-%m-%dT%H:%M:%S %z'
 #    time_keep: "on"
 
-fluentbit_include_d: false
 fluentbit_extra_confd: []
 #  - name: postgresql
 #    content: |

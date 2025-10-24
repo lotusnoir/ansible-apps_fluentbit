@@ -19,6 +19,7 @@ galaxy_info:
         - "bookworm"
     - name: "Rocky"
       versions:
+        - "8"
         - "9"
     - name: "OracleLinux"
       versions:
