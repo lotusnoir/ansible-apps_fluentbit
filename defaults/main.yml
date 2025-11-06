@@ -4,7 +4,6 @@ fluentbit_install_method: repo  # or build (not working)
 fluentbit_install_force: false
 fluentbit_start_service: true
 
-
 ### SRC install
 fluentbit_install_dir: "/opt/fluent-bit"
 fluentbit_bin_name: "fluent-bit"

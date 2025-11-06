@@ -16,3 +16,13 @@
   retries: 12
   delay: 10
   until: __pkg_result is success
+
+- name: "REDHAT10+ | Install openssl"
+  ansible.builtin.dnf:
+    name: "openssl"
+    nobest: true
+  register: __pkg_result
+  retries: 12
+  delay: 10
+  until: __pkg_result is success
+  when: ansible_os_family == 'RedHat' and (ansible_distribution_major_version | int) == 10
