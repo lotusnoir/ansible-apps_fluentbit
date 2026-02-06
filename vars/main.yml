@@ -1,7 +1,8 @@
 ---
 # Repo vars
 fluentbit_repository_key: "https://packages.fluentbit.io/fluentbit.key"
-fluentbit_repository: "deb https://packages.fluentbit.io/{{ ansible_distribution | lower }}/{{ ansible_distribution_release }} {{ ansible_distribution_release }} main"
+fluentbit_repository: >-
+  deb https://packages.fluentbit.io/{{ ansible_facts.distribution | lower }}/{{ ansible_distribution_release }} {{ ansible_distribution_release }} main
 fluentbit_repository_file: "fluentbit"
 _fluentbit_service_name: "fluent-bit"
 

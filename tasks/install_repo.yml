@@ -5,12 +5,12 @@
     - name: "Debian tasks"
       ansible.builtin.include_tasks: setup-debian.yml
       when:
-        - ansible_os_family == 'Debian'
+        - ansible_facts.os_family == 'Debian'
 
     - name: "Redhat tasks"
       ansible.builtin.include_tasks: setup-redhat.yml
       when:
-        - ansible_os_family in ["RedHat", "Rocky", "OracleLinux"]
+        - ansible_facts.os_family in ["RedHat", "Rocky", "OracleLinux"]
 
     - name: "Ensure LimitNOFILE is set for systemd"
       ansible.builtin.lineinfile:
